@@ -1,0 +1,285 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{vietnam}
+\usepackage{tcolorbox}
+\usepackage{geometry}
+\usepackage{verbatim}
+
+\geometry{
+		top = 25mm,
+		left = 30mm,
+		right = 20mm,
+		bottom = 30mm
+}
+\begin{document}
+\textsc{\LARGE Đại Học Bách Khoa Hà Nội} \\[1,5cm]
+	\textsc{\large Lớp Kĩ Sư Tài Năng - Công Nghệ Thông Tin K62} \\[0.5cm]
+	{\huge\bfseries Các Vấn Đề Về Đồng Bộ Đa Luồng}\\[0.4cm] 
+	
+		\begin{flushleft}
+			\large
+			Ngày 1 tháng 4 năm 2019 \\[0.5cm]
+			\textit{Author}\\[0,3cm]
+			   Trương Ngọc Giang \\
+			   Trần Minh Hiếu  \\
+			   Trương Quang Khánh \\
+		\end{flushleft}
+		
+	\tableofcontents
+	
+	\section{Vấn đề người hút thuốc lá}
+	Tài liệu tham khảo: \cite{littlebook4} \\
+	\subsection{Đặt vấn đề}
+	Bài toán về người hút thuốc lá được đưa ra bởi Suhas Patil \cite{r2}.\\[0.5cm]
+	\large{Đặt vấn đề}
+	\begin{tcolorbox}
+		Có 3 người hút thuốc là và một đại lý sản xuất thuốc lá. Để hút một điếu thuốc lá cần 3 thành 
+		phần là thuốc, giấy và diêm. Đại lý thì sở hữu 3 thành phần trên, còn mỗi người hút thuốc
+		chỉ có duy nhất một thành phần, không ai giống ai, nên đặt tên là người có thuốc, người có giấy
+		và người có diêm, giả sử sự sở hữu ở đây là có vô hạn. Người hút thuốc chỉ thực hiện hai công
+		việc đó là lấy thành phần và hút thuốc. Công việc của đại lý là chọn ngẫu nhiên hai thành phần 
+		khác nhau, đưa chúng ra bàn trưng bày, và tuỳ thuộc vào hai thành phần đó mà người hút thuốc trưng bày,
+		có thành phần bổ sung sẽ lấy nó
+		và tiến hành hút thuốc. Ví dụ như đại lý chọn ra thuốc và giấy, thì khi đó người có diêm sẽ lấy 
+		các thành phần của đại lý, ra hiệu rằng anh ta đã lấy đủ thành phần cho đại lý biết và cả hai tiếp
+		tục công việc của mình.
+	\end{tcolorbox}
+	Trong bài toán trên, đại lý giống như một hệ điều hành phân phối tài nguyên, còn các người hút thuốc
+	là các tiến trình yêu cầu tài nguyên. Khi tài nguyên khả dụng thì sẽ phân phối cho các tiến trình cần
+	nó, nhưng sẽ tránh trường hợp phân phối cho tiến trình không thể tiến hành sử dụng tài nguyên đó. \\
+	Với giả thuyết trên, có 3 phiên bản được đưa ra như là một rằng buộc khi giải quyết vấn đề này:
+	\begin{itemize}
+		\item \large{The Impossible Version:} Không được tác động đến code của đại lý. Điều đó cũng 
+		giống như việc không thể thay đổi code của hệ điều hành mỗi khi có một được cài đặt. Ngoài ra
+		cũng không được sử dụng câu lệnh điều kiện, hay như là dùng một dãy semaphores.  
+		Với rằng buộc này thì vấn đề không thể giải quyết. 
+		\item \large{The Interesting Version:} Bài toán sẽ trở lên thú vị và có thể giải quyết khi
+		bỏ qua điều kiện thứ hai, tức là rằng buộc duy nhất là không được thay đổi code của đại lý.
+		\item \large{The trivial version:} Trong trường hợp khác, bài toán được phép giải quyết với
+		điều kiện rằng đại lý sẽ lựa chọn người hút thuốc phù hợp với sản phẩm mình làm ra rồi phân 
+		phối cho người đó. Khi đó, vấn để trở lên tầm thường, các thành phần và việc hút thuốc trở 
+		lên ít liên quan. Ngoài ra, trong thực tế, rất khó khăn khi bắt hệ điều hành phải biết trước
+		về các tiến trình và tài nguyên chúng yêu cầu. 
+	\end{itemize}
+	Sau đây là hướng tiếp cận của trường hợp chỉ bị rằng buộc rằng không thể thay đổi code của đại lý.
+	\subsection{Mô hình code của đại lý}
+	Trước tiên, ta sẽ xây dựng mô hình hoạt động đơn giản của các tiến trình. \\[0.5cm]
+	Thiết lập đèn báo cho đại lý:
+	\begin{tcolorbox}
+		agentSem = Semaphore (1)\\
+		tobaco = Semaphore (0)\\
+		paper = Semaphore (0)\\
+		match = Semaphore (0)
+	\end{tcolorbox}
+	\hspace{4mm} Công việc của đại lý là tạo ra hai thành phần khác nhau, đợi người hút thuốc thích hợp đến lấy,
+	rồi nhận tín hiệu từ người hút thuốc rằng đã lấy, lại tiếp tục tạo hai thành phần ngẫu nhiên, lặp đi lặp lại vô hạn. \\
+	Như vậy, sẽ có 3 trường hợp xảy ra, và đoạn code tương ứng là:
+	\\
+	\begin{center}
+	Tiến trình A
+	\begin{tcolorbox}
+		agentSem.wait ( ) \\
+		tobaco.signal ( ) \\
+		paper.signal ( )
+	\end{tcolorbox} 
+	\end{center}
+	\begin{center}
+	{Tiến trình B}
+	\begin{tcolorbox}
+		agentSem.wait ( ) \\
+		paper.signal ( ) \\
+		match.signal ( )
+	\end{tcolorbox} 
+	\end{center}
+	\begin{center}
+	{Tiến trình C}
+	\begin{tcolorbox}
+		agentSem.wait ( ) \\
+		tobaco.signal ( ) \\
+		match.signal ( )
+	\end{tcolorbox}	
+	\end{center}
+	
+	\begin{center}
+		Người có thuốc
+		\begin{tcolorbox}
+		paper.wait ( ) \\
+		match.wait ( ) \\ 
+		agentSem.signal ( ) 
+		\end{tcolorbox}
+	\end{center}
+	\begin{center}
+		Người có giấy
+		\begin{tcolorbox}
+		tobaco.wait ( ) \\
+		match.wait ( ) \\ 
+		agentSem.signal ( ) 
+		\end{tcolorbox}
+	\end{center}
+	\begin{center}
+		Người có diêm
+		\begin{tcolorbox}
+		paper.wait ( ) \\
+		tobaco.wait ( ) \\ 
+		agentSem.signal ( ) 
+		\end{tcolorbox}
+	\end{center}
+	
+	
+	Với mô hình đơn giản như vậy, ta có thể hình dung được tình huống deadlock có thể xảy ra. 
+	
+	
+	Ví dụ như trong trường hợp đại lý bật đèn báo có thuốc thì người có diêm đến lấy và đợi đại lý 
+	cung cấp giấy, sau đó đại lý bật đèn báo có diêm, thì có thể lúc đó người có thuốc đến lấy,
+	thì người có thuốc lại đợi đại lý bật đèn báo có giấy, còn đại lý thì đợi tín hiệu hoàn thành từ 
+	khách hàng rồi mới tiếp tục công việc. Như vậy sẽ xảy ra deadlock.
+	\subsection{Lời giải vấn đề với các câu lệnh rẽ nhánh}
+	Theo phân tích trên thì thấy rằng tình huống deadlock xảy ra khi đại lý cho phép người hút
+	lấy thành phần mà không quan tâm người đến việc người hút có thể tiến hành sử dụng sản phẩm được ngay sau 
+	đó hay không. Như vậy, để giải quyết vấn đề này, 
+	ta có thể cài đặt hệ thống phân phối, sẽ là trung gian giữa đại lý và người hút. \\
+	Công việc của hệ thống phân phối này đó là kiểm tra các thành phần trên bàn phù hợp với người 
+	nào, sau đó báo cho người đó biết. Các người hút chỉ đến lấy khi được hệ thống phân phối báo. \\
+	Câu trúc dữ liệu của nhà phân phối được khởi tạo gồm: 
+	\begin{tcolorbox}
+	isTobaco = isPaper = isMatch = false \\
+	tobacoSem = semaphore (0) \\
+	paperSem = semaphore (0) \\
+	matchSem = semaphore (0)
+	\end{tcolorbox}
+	Trong đó, các biến boolen thể hiện rằng thành phần tương ứng có sẵn trên bàn hay không. 
+	
+	
+	\hspace{4mm}Các semaphore có chức năng đánh thức người hút tương ứng với các thành phần thuốc ở trên bàn. \\
+	Dưới đây là code cho nhà phân phối trường hợp đại lý đưa ra thuốc:
+	\begin{tcolorbox}
+		\begin{verbatim}
+		 tobaco.wait( )
+		 mutex.wait( ) 
+		     if isPaper : 
+		        isPaper = false
+		        matchSem.signal( )
+		     else if isMatch : 
+		        isMatch = false
+		        paperSem.signal( )
+		     else :
+		        isTobaco = true
+		 mutex.signal( )
+		\end{verbatim}
+	\end{tcolorbox}
+	Nhà phân phối sẽ nhận sản phẩm từ đại lý, đặt lên bàn và kiểm 
+	tra xem trên bàn đã đủ hai thành phần chưa, nếu đủ rồi thì thông báo cho người hút thuốc tương ứng.
+	Dưới đây là đoạn code của người có thuốc:
+	\begin{tcolorbox}
+		tobaccoSem.wait ( ) \\
+		makeCigarette ( ) \\ 
+		agentSem.signal ( ) \\
+		smoke ( )
+	\end{tcolorbox}
+	
+	Ngoài cách làm trên, dưới đây là một công cụ khác để kiểm tra các sản phẩm đang có mặt trên bàn.
+	\subsection{Lời giải với dãy đèn báo Semaphore \cite{r3}}	
+	Vấn đề của bài toán này chính là ở chỗ khi chưa xác nhận được hai thành phần mà đại lý cung cấp phù hợp với 
+	người hút nào thì họ đã đến lấy thành phần, dẫn đến tình huống người hút lấy thành phần xong không thể sử dụng.
+	
+	
+	Giải pháp vẫn là chỉ cho người hút lấy khi đã xác định được hai thành phần, nhưng ta sẽ sử dụng dãy đèn báo 
+	semaphore. \\[0.5cm]	
+	Trước tiên, khởi tạo:
+	
+	\begin{center}
+		\begin{tcolorbox}
+		mutex = semaphore (1) \\
+		integer t = 0 \\ 
+		senaphore array S[ 1 : 6 ] ; """ Khởi tạo các đèn báo đều bằng không """
+		\end{tcolorbox}
+	\end{center}
+	
+	Ý tưởng là bằng việc sử dụng biến dùng chung t để xác định trên bàn đang có những thành phần nào. \\
+	Ta sẽ có mô hình code các tiến trình đó như sau: 
+	\begin{center}
+		Khi đại lý đưa ra thuốc
+		\begin{tcolorbox}
+		\begin{verbatim}
+		tobaco.wait ( )            paper.wait ( )           match.wait ( )
+		mutex.wait ( )             mutex.wait ( )           mutex.wait ( )
+		t = t + 1                  t = t + 2                t = t + 4
+		s[t].signal                s[t].signal ( )          s[t].signal ( )
+		mutex. signal ( )          mutex.signal ( )         mutex.signal ( )
+		\end{verbatim}
+		\end{tcolorbox}
+	\end{center}
+	Với cách cài đặt này thì, 
+	\begin{itemize}
+		\item t = 3 , giao 2 sản phẩm trên bàn cho người có diêm.
+		\item t = 5 , giao 2 sản phẩm trên bàn cho người có giấy.
+		\item t = 6 , giao 2 sản phẩm trên bàn cho người có thuốc.
+	\end{itemize}
+	Sau khi người hút nhận được thành phần, đặt lại giá trị t = 0, báo hiệu cho đại lý, sau đó hút thuốc.\\[5mm]
+	Dưới đây là code cho người có diêm, người có giấy và người có thuốc
+	\begin{tcolorbox}
+		\begin{verbatim}
+		s[3].wait ( )              s[5].wait ( )            s[6].wait ( )
+		t = 0                      t = 0                    t = 0
+		makeCigarette ( )          makeCigarette ( )        makeCigarette ( )
+		agentSem.signal ( )        agentSem.signal ( )      agentSem.signal ( )
+		smoke ( )                  smoke ( )                smoke ( )       
+		\end{verbatim}
+	\end{tcolorbox}
+	
+	
+	
+	Hai lời giải trên là dành cho trường hợp khi mà đại lý chờ đợi người hút đến lấy các thành phần rồi thông báo rồi
+	thì mới tiếp tục đưa ra các thành phần tiếp theo. Sẽ ra sao nếu như đại lý không chờ đợi mà tiếp tục đưa 
+	ra các thành phần. \\
+	Khi đó, bài toán sẽ trở lên khó khăn hơn, vì lúc đó đại lý có thể phục vụ cho nhiều hơn một nguời cùng một
+	thời điểm. Ngoài việc xác định xem thành phần nào có mặt trên bàn, ta phải xác nhận thêm cả về số
+	lượng hiện có. Để đơn giản nhất, ta sẽ sử dụng các câu lệnh điều kiện thay vì sử dụng một dãy đèn báo semaphore. 
+	\subsection{Trường hợp đại lý không chờ đợi tín hiệu từ người hút}
+	Trong lời giải trước, ta sử dụng các biến boolen để đếm các thành phần có trên bàn, do mỗi thành phần
+	tối đa chỉ có một. Khi điều kiện thay đổi như trên, để đếm được, ta sẽ dùng biến nguyên. Công việc của 
+	nhà phân phối vẫn không thay đổi, tại một thời điểm chỉ cho một người lấy, dựa vào số lượng sản phẩm 
+	trên bàn để thông báo đến người phù hợp.
+	\begin{tcolorbox}
+	numTobaco = numPaper = numMatch = 0 \\
+	tobacoSem = semaphore (0) \\
+	paperSem = semaphore (0) \\
+	matchSem = semaphore (0)
+	\end{tcolorbox}
+	Dưới đây là code cho nhà phân phối trong trường hợp đại lý đưa ra thuốc: \\
+	\begin{tcolorbox}
+		\begin{verbatim}
+		 	tobacco.wait( )
+			mutex.wait ( )
+			   if numPaper :
+			      numPaper -= 1
+			      matchSem . signal ( )
+			   elif numMatch :
+			      numMatch -= 1
+			      paperSem . signal ( )
+			   else :
+			      numTobacco += 1
+			mutex.signal ( )
+		\end{verbatim}
+	\end{tcolorbox}	
+	
+	\subsection{Nhận xét}
+	Trong vấn đề trên, ta đã sử dụng các nhà phân phối như là các phương thức trung gian giữa đại lý và người hút 
+	có nhiệm vụ chính là đưa sản phẩm từ đại lý ra bàn trừng bầy rồi tìm kiếm người hút thích hợp. Các sản phẩm được đặt 			trên bản, vàn tại một thời điểm chỉ 
+	có một nhà phân phối là được kiểm tra số lượng sản phẩm trên bàn, nêu thấy có thành phần phù hợp thì lấy nó và
+	đưa cho người hút, còn không thì đặt thành phần mình đang giữ xuống bàn. 
+	
+	
+	
+	
+	\pagebreak
+	\begin{thebibliography}{9}
+	\bibitem{littlebook4}
+  	Allen B.Downey
+  	\textit{The Little Book Of Semaphores version 2.2.1},chapter 4, second edition, 2016
+  	\bibitem{r2}
+  	\textit{Suhas Patil},  Limitations and capabilities of Dijkstra’s semaphore primitives
+	for coordination among processes. Technical report, MIT, 1971
+	\bibitem{r3}
+	\textit{}Parnas, David. (1975). On a solution to the cigarette smoker's problem (without conditional statements). Communications of the ACM. 18. 181-183. 10.1145/360680.360709. 
+	\end{thebibliography}
+\end{document}
