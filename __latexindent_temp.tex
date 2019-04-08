@@ -146,7 +146,7 @@
 	paperSem = semaphore (0) \\
 	matchSem = semaphore (0)
 	\end{tcolorbox}
-	Trong đó, các biến boolean thể hiện rằng thành phần tương ứng có sẵn trên bàn hay không. 
+	Trong đó, các biến boolen thể hiện rằng thành phần tương ứng có sẵn trên bàn hay không. 
 	
 	
 	\hspace{4mm}Các semaphore có chức năng đánh thức người hút tương ứng với các thành phần thuốc ở trên bàn. \\
@@ -235,7 +235,7 @@
 	thời điểm. Ngoài việc xác định xem thành phần nào có mặt trên bàn, ta phải xác nhận thêm cả về số
 	lượng hiện có. Để đơn giản nhất, ta sẽ sử dụng các câu lệnh điều kiện thay vì sử dụng một dãy đèn báo semaphore. 
 	\subsection{Trường hợp đại lý không chờ đợi tín hiệu từ người hút}
-	Trong lời giải trước, ta sử dụng các biến boolean để đếm các thành phần có trên bàn, do mỗi thành phần
+	Trong lời giải trước, ta sử dụng các biến boolen để đếm các thành phần có trên bàn, do mỗi thành phần
 	tối đa chỉ có một. Khi điều kiện thay đổi như trên, để đếm được, ta sẽ dùng biến nguyên. Công việc của 
 	nhà phân phối vẫn không thay đổi, tại một thời điểm chỉ cho một người lấy, dựa vào số lượng sản phẩm 
 	trên bàn để thông báo đến người phù hợp.
@@ -271,56 +271,18 @@
 	\pagebreak
 	\section{Vấn đề Qua sông}
 	Bài toán Qua sông (River Crossing Problem) được trích dẫn từ bộ bài tập của Anthony Joseph tại đại học U.C. Berkeley, 
-	tuy nhiên không rõ ông có phải là tác giả của bài toán này hay không \cite{littlebook5}. Bài toán này gần giống bài toán
-	H2O, tuy nhiên khác ở chỗ là barrier chỉ cho phép một số tổ hợp tiến trình nhất định được phép qua.
+	tuy nhiên không rõ ông có phải là tác giả của bài toán này hay không \cite{littlebook5}.
 	
-	\subsection{Đặt vấn đề}
+	\large{Đặt vấn đề:}
 	
 	\begin{tcolorbox}
-		Ở một nơi gần Redmond, Washington có một con đò được sử dụng bởi cả
-		các hacker Linux và nhân viên (nông nô) của Microsoft để qua 
-		sông. Con đò có thể chở được đúng 4 người; nó sẽ không rời bờ nếu như
-		chưa đủ người hoặc quá người. Để đảm bảo sự an toàn của các hành khách,
-		chúng ta không thể để một hacker ngồi riêng đò với ba nhân viên, hoặc một
-		nhân viên ngồi riêng với ba hacker. Bất cứ một tổ hợp nào khác đều là hợp lệ.
-
-		Khi một tiến trình "lên đò", nó cần phải gọi hàm một hàm board(). Bạn cần phải 
-		đảm bảo cả bốn tiến trình trên cùng một chuyến đò đều phải gọi hàm board() này 
-		trước bốn tiến trình của chuyến đò tiếp theo.
-
-		Khi cả bốn tiến trình đã gọi hàm board(), chính xác một tiến trình phải gọi hàm 
-		rowBoat(), thể hiện rằng tiến trình này sẽ là tiến trình lái đò. Không quan trọng 
-		tiến trình nào là tiến trình lái đò, miễn là một trong số chúng phải gọi hàm này.
+		Somewhere near Redmond, Washington there is a rowboat that is used by
+both Linux hackers and Microsoft employees (serfs) to cross a river. The ferry
+can hold exactly four people; it won’t leave the shore with more or fewer. To
+guarantee the safety of the passengers, it is not permissible to put one hacker
+in the boat with three serfs, or to put one serf with three hackers. Any other
+combination is safe.
 	\end{tcolorbox}
-	
-	\subsection{Mô hình code}
-
-	Tác giả của bài toán đã đưa ra mô hình sau trong lời giải của mình:
-
-	\begin{tcolorbox}
-		barrier = Barrier (4) \\
-		mutex = Semaphore (1) \\
-		hackers = 0 \\
-		serfs = 0 \\
-		hackerQueue = Semaphore (0) \\
-		serfQueue = Semaphore (0) \\
-		local isCaptain = False
-	\end{tcolorbox}
-
-	Trong đó:
-
-	\begin{itemize}
-		\item {hackers và serifs là biến đếm số lượng hacker và nhân viên đang chờ được lên đò.
-			Vì chúng đều được bảo vệ bởi mutex, ta có thể kiểm tra giá trị của cả hai hàm mà 
-			không phải lo lắng về các tiến trình khác cập nhật giữa chừng.}
-		\item {hackerQueue và serfQueue cho phép ta kiểm soát số lượng hacker và nhân viên được 
-			qua. Barrier đảm bảo rằng cả bốn tiến trình đã gọi hàm board() trước khi gọi hàm 
-			rowBoat().}
-		\item {isCaptain là một biến địa phương cho biết tiến trình nào phải gọi rowBoard().}
-	\end{itemize}
-
-	\subsection{Lời giải của tác giả Allen B.Downey}
-	
 	
 	\pagebreak
 	\begin{thebibliography}{9}
