@@ -3,6 +3,7 @@
 \usepackage{tcolorbox}
 \usepackage{geometry}
 \usepackage{verbatim}
+\usepackage{hyperref}
 
 \geometry{
 		top = 25mm,
@@ -27,10 +28,10 @@
 	\tableofcontents
 	
 	\section{Vấn đề người hút thuốc lá}
-	Tài liệu tham khảo: \cite{littlebook4} \\
+	Bài toán về người hút thuốc lá được đưa ra bởi Suhas Patil \cite{littlebook4}.
 	\subsection{Đặt vấn đề}
-	Bài toán về người hút thuốc lá được đưa ra bởi Suhas Patil \cite{r2}.\\[0.5cm]
-	\large{Đặt vấn đề}
+	
+	
 	\begin{tcolorbox}
 		Có 3 người hút thuốc là và một đại lý sản xuất thuốc lá. Để hút một điếu thuốc lá cần 3 thành 
 		phần là thuốc, giấy và diêm. Đại lý thì sở hữu 3 thành phần trên, còn mỗi người hút thuốc
@@ -43,37 +44,45 @@
 		các thành phần của đại lý, ra hiệu rằng anh ta đã lấy đủ thành phần cho đại lý biết và cả hai tiếp
 		tục công việc của mình.
 	\end{tcolorbox}
+
 	Trong bài toán trên, đại lý giống như một hệ điều hành phân phối tài nguyên, còn các người hút thuốc
 	là các tiến trình yêu cầu tài nguyên. Khi tài nguyên khả dụng thì sẽ phân phối cho các tiến trình cần
 	nó, nhưng sẽ tránh trường hợp phân phối cho tiến trình không thể tiến hành sử dụng tài nguyên đó. \\
 	Với giả thuyết trên, có 3 phiên bản được đưa ra như là một rằng buộc khi giải quyết vấn đề này:
+
 	\begin{itemize}
-		\item \large{The Impossible Version:} Không được tác động đến code của đại lý. Điều đó cũng 
+		\item The Impossible Version: Không được tác động đến code của đại lý. Điều đó cũng 
 		giống như việc không thể thay đổi code của hệ điều hành mỗi khi có một được cài đặt. Ngoài ra
 		cũng không được sử dụng câu lệnh điều kiện, hay như là dùng một dãy semaphores.  
 		Với rằng buộc này thì vấn đề không thể giải quyết. 
-		\item \large{The Interesting Version:} Bài toán sẽ trở lên thú vị và có thể giải quyết khi
+		\item The Interesting Version: Bài toán sẽ trở lên thú vị và có thể giải quyết khi
 		bỏ qua điều kiện thứ hai, tức là rằng buộc duy nhất là không được thay đổi code của đại lý.
-		\item \large{The Trivial Version:} Trong trường hợp khác, bài toán được phép giải quyết với
+		\item The Trivial Version: Trong trường hợp khác, bài toán được phép giải quyết với
 		điều kiện rằng đại lý sẽ lựa chọn người hút thuốc phù hợp với sản phẩm mình làm ra rồi phân 
 		phối cho người đó. Khi đó, vấn để trở lên tầm thường, các thành phần và việc hút thuốc trở 
 		lên ít liên quan. Ngoài ra, trong thực tế, rất khó khăn khi bắt hệ điều hành phải biết trước
 		về các tiến trình và tài nguyên chúng yêu cầu. 
 	\end{itemize}
+
 	Sau đây là hướng tiếp cận của trường hợp chỉ bị rằng buộc rằng không thể thay đổi code của đại lý.
+
 	\subsection{Mô hình code của đại lý}
-	Trước tiên, ta sẽ xây dựng mô hình hoạt động đơn giản của các tiến trình. \\[0.5cm]
+	Trước tiên, ta sẽ xây dựng mô hình hoạt động đơn giản của các tiến trình.
+
 	Thiết lập đèn báo cho đại lý:
+
 	\begin{tcolorbox}
 		agentSem = Semaphore (1)\\
 		tobaco = Semaphore (0)\\
 		paper = Semaphore (0)\\
 		match = Semaphore (0)
 	\end{tcolorbox}
-	\hspace{4mm} Công việc của đại lý là tạo ra hai thành phần khác nhau, đợi người hút thuốc thích hợp đến lấy,
-	rồi nhận tín hiệu từ người hút thuốc rằng đã lấy, lại tiếp tục tạo hai thành phần ngẫu nhiên, lặp đi lặp lại vô hạn. \\
+
+	Công việc của đại lý là tạo ra hai thành phần khác nhau, đợi người hút thuốc thích hợp đến lấy,
+	rồi nhận tín hiệu từ người hút thuốc rằng đã lấy, lại tiếp tục tạo hai thành phần ngẫu nhiên, lặp đi lặp lại vô hạn.
+
 	Như vậy, sẽ có 3 trường hợp xảy ra, và đoạn code tương ứng là:
-	\\
+	
 	\begin{center}
 	Tiến trình A
 	\begin{tcolorbox}
@@ -166,9 +175,12 @@
 		 mutex.signal( )
 		\end{verbatim}
 	\end{tcolorbox}
+
 	Nhà phân phối sẽ nhận sản phẩm từ đại lý, đặt lên bàn và kiểm 
 	tra xem trên bàn đã đủ hai thành phần chưa, nếu đủ rồi thì thông báo cho người hút thuốc tương ứng.
+
 	Dưới đây là đoạn code của người có thuốc:
+
 	\begin{tcolorbox}
 		tobaccoSem.wait ( ) \\
 		makeCigarette ( ) \\ 
@@ -177,13 +189,14 @@
 	\end{tcolorbox}
 	
 	Ngoài cách làm trên, dưới đây là một công cụ khác để kiểm tra các sản phẩm đang có mặt trên bàn.
+
 	\subsection{Lời giải với dãy đèn báo Semaphore \cite{r3}}	
 	Vấn đề của bài toán này chính là ở chỗ khi chưa xác nhận được hai thành phần mà đại lý cung cấp phù hợp với 
 	người hút nào thì họ đã đến lấy thành phần, dẫn đến tình huống người hút lấy thành phần xong không thể sử dụng.
 	
-	
 	Giải pháp vẫn là chỉ cho người hút lấy khi đã xác định được hai thành phần, nhưng ta sẽ sử dụng dãy đèn báo 
-	semaphore. \\[0.5cm]	
+	semaphore.
+
 	Trước tiên, khởi tạo:
 	
 	\begin{center}
@@ -208,13 +221,17 @@
 		\end{verbatim}
 		\end{tcolorbox}
 	\end{center}
-	Với cách cài đặt này thì, 
+
+	Với cách cài đặt này thì:
+
 	\begin{itemize}
 		\item t = 3 , giao 2 sản phẩm trên bàn cho người có diêm.
 		\item t = 5 , giao 2 sản phẩm trên bàn cho người có giấy.
 		\item t = 6 , giao 2 sản phẩm trên bàn cho người có thuốc.
 	\end{itemize}
-	Sau khi người hút nhận được thành phần, đặt lại giá trị t = 0, báo hiệu cho đại lý, sau đó hút thuốc.\\[5mm]
+
+	Sau khi người hút nhận được thành phần, đặt lại giá trị t = 0, báo hiệu cho đại lý, sau đó hút thuốc.
+
 	Dưới đây là code cho người có diêm, người có giấy và người có thuốc
 	\begin{tcolorbox}
 		\begin{verbatim}
@@ -230,22 +247,28 @@
 	
 	Hai lời giải trên là dành cho trường hợp khi mà đại lý chờ đợi người hút đến lấy các thành phần rồi thông báo rồi
 	thì mới tiếp tục đưa ra các thành phần tiếp theo. Sẽ ra sao nếu như đại lý không chờ đợi mà tiếp tục đưa 
-	ra các thành phần. \\
+	ra các thành phần. 
+
 	Khi đó, bài toán sẽ trở lên khó khăn hơn, vì lúc đó đại lý có thể phục vụ cho nhiều hơn một nguời cùng một
 	thời điểm. Ngoài việc xác định xem thành phần nào có mặt trên bàn, ta phải xác nhận thêm cả về số
 	lượng hiện có. Để đơn giản nhất, ta sẽ sử dụng các câu lệnh điều kiện thay vì sử dụng một dãy đèn báo semaphore. 
+
 	\subsection{Trường hợp đại lý không chờ đợi tín hiệu từ người hút}
+
 	Trong lời giải trước, ta sử dụng các biến boolean để đếm các thành phần có trên bàn, do mỗi thành phần
 	tối đa chỉ có một. Khi điều kiện thay đổi như trên, để đếm được, ta sẽ dùng biến nguyên. Công việc của 
 	nhà phân phối vẫn không thay đổi, tại một thời điểm chỉ cho một người lấy, dựa vào số lượng sản phẩm 
 	trên bàn để thông báo đến người phù hợp.
+
 	\begin{tcolorbox}
 	numTobaco = numPaper = numMatch = 0 \\
 	tobacoSem = semaphore (0) \\
 	paperSem = semaphore (0) \\
 	matchSem = semaphore (0)
 	\end{tcolorbox}
-	Dưới đây là code cho nhà phân phối trong trường hợp đại lý đưa ra thuốc: \\
+
+	Dưới đây là code cho nhà phân phối trong trường hợp đại lý đưa ra thuốc:
+
 	\begin{tcolorbox}
 		\begin{verbatim}
 		 	tobacco.wait( )
@@ -264,7 +287,7 @@
 	
 	\subsection{Nhận xét}
 	Trong vấn đề trên, ta đã sử dụng các nhà phân phối như là các phương thức trung gian giữa đại lý và người hút 
-	có nhiệm vụ chính là đưa sản phẩm từ đại lý ra bàn trừng bầy rồi tìm kiếm người hút thích hợp. Các sản phẩm được đặt 			trên bản, vàn tại một thời điểm chỉ 
+	có nhiệm vụ chính là đưa sản phẩm từ đại lý ra bàn trừng bầy rồi tìm kiếm người hút thích hợp. Các sản phẩm được đặt trên bản, vàn tại một thời điểm chỉ 
 	có một nhà phân phối là được kiểm tra số lượng sản phẩm trên bàn, nêu thấy có thành phần phù hợp thì lấy nó và
 	đưa cho người hút, còn không thì đặt thành phần mình đang giữ xuống bàn. 
 	
@@ -298,13 +321,15 @@
 	Tác giả của bài toán đã đưa ra mô hình sau trong lời giải của mình:
 
 	\begin{tcolorbox}
-		barrier = Barrier (4) \\
-		mutex = Semaphore (1) \\
-		hackers = 0 \\
-		serfs = 0 \\
-		hackerQueue = Semaphore (0) \\
-		serfQueue = Semaphore (0) \\
+	\begin{verbatim}
+		barrier = Barrier(4) 
+		mutex = Semaphore(1) 
+		hackers = 0 
+		serfs = 0 
+		hackerQueue = Semaphore(0) 
+		serfQueue = Semaphore(0) 
 		local isCaptain = False
+	\end{verbatim}
 	\end{tcolorbox}
 
 	Trong đó:
@@ -320,20 +345,104 @@
 	\end{itemize}
 
 	\subsection{Lời giải của tác giả Allen B.Downey}
+	Ý tưởng chủ đạo của lời giải này là khi mỗi một tiến trình xuất hiện, ta cập nhật bộ đếm 
+	tương ứng lên một và kiểm tra xem số lượng hiện tại đã đủ để tạo thành một tổ hợp hoàn chỉnh
+	hợp lệ hay chưa.
+
+	Đoạn code sau xử lý việc lên đò của hacker. Đối với nhân viên ta cũng xử lý tương tự.
+
+	\begin{tcolorbox}
+	\begin{verbatim}
+		mutex.wait()
+		    hackers += 1
+		    if hackers == 4: 
+		        hackerQueue.signal(4)
+		        hackers = 0 
+		        isCaptain = True 
+		    elif hackers == 2 and serfs >= 2: 
+		        hackerQueue.signal(2) 
+		        serfQueue.signal(2) 
+		        serfs -= 2 
+		        hackers = 0 
+		        isCaptain = True 
+		    else:
+		        mutex.signal() # Tiến trình lái đò tiếp tục giữ mutex 
+		
+		hackerQueue.wait() 
+		
+		board() 
+		barrier.wait() 
+		
+		if isCaptain: 
+		    rowBoat() 
+		    mutex.signal() # Tiến trình lái đò có thể bỏ mutex 
+	\end{verbatim}
+	\end{tcolorbox}
 	
-	
+	Khi mỗi tiến trình được mutex cho qua, nó kiểm tra xem số lượng tiến
+	trình đang đợi có đủ tạo thành một tổ hợp hoàn chỉnh hay không. Nếu có, 
+	nó ra tín hiệu phù hợp cho các tiến trình đang đợi, tự tuyên bố là 
+	thuyền trưởng (người lái đò) và tiếp tục giữ mutex để ngăn các tiến trình
+	khác lên đò cho tới khi chuyến đò hiện tại đã khởi hành.
+
+	Barrier sẽ lưu lại số lượng tiến trình đã gọi hàm board(). Khi đã đủ số
+	lượng tiến trình, thuyền trưởng có thể gọi hàm rowBoard() và bỏ mutex để
+	cho phép các tiến trình khác lên chuyến đò tiếp theo.
+
+	\subsection{Lời giải trên blog của Marcelo Bytes\cite{bytes}}
+	Ý tưởng chủ đạo của lời giải này xoay quanh trạng thái có 3 tiến trình đã 
+	lên đò. Khi đó:
+
+	\begin{itemize}
+		\item {Nếu có hai hacker và một nhân viên lên đò, chỉ có nhân viên mới được lên đò.}
+		\item {Nếu có ba hacker, chỉ có hacker mới được lên đò.}
+		\item {Nếu có ba nhân viên, chỉ có nhân viên mới được lên đò.}
+		\item {Nếu có hai nhân viên và một hacker, chỉ có hacker mới được lên đò.}
+	\end{itemize}
+
+	Ta sẽ sử dụng hai thủ tục độc lập, tạm gọi là hackerGenerator() và 
+	serfGenerator() để khởi tạo tiến trình thuộc loại tương ứng. Khi đó trong
+	thủ tục chính, khi xuất hiện trạng thái 3 người lên đò, ta có thể chặn một
+	trong hai thủ tục này để chỉ cho phép thủ tục thuộc đúng loại được lên đò.
+
+	Đoạn code sau xử lý việc lên đò của hacker. Đối với nhân viên ta cũng xử lý tương tự.
+
+	\begin{tcolorbox}
+		\begin{verbatim}
+			hackers += 1
+			if hackers + serfs == 3: 
+			    if hackers == 2:
+			        # Block hackerGenerator()
+			    if hackers == 3:
+			        # Block serfGenerator()
+			    if serfs == 2:
+			        # Block serfGenerator()
+			    if serfs == 3:
+					# Block hackerGenerator()
+			if hackers + serifs == 4:
+			    isCaptain = True
+			
+			board() 
+			barrier.wait() 
+			
+			if isCaptain: 
+			    rowBoat() 
+			    # Thả tất cả các block hiện tại
+		\end{verbatim}
+	\end{tcolorbox}
+
 	\pagebreak
 	\begin{thebibliography}{9}
 	\bibitem{littlebook4}
   	Allen B.Downey,
   	\textit{The Little Book Of Semaphores version 2.2.1}, chapter 4, second edition, 2016
-  	\bibitem{r2}
-  	\textit{Suhas Patil},  Limitations and capabilities of Dijkstra’s semaphore primitives
-	for coordination among processes. Technical report, MIT, 1971
-	\bibitem{r3}
+  	\bibitem{r3}
 	\textit{}Parnas, David. (1975). On a solution to the cigarette smoker's problem (without conditional statements). Communications of the ACM. 18. 181-183. 10.1145/360680.360709. 
 	\bibitem{littlebook5}
   	Allen B.Downey,
-  	\textit{The Little Book Of Semaphores version 2.2.1}, chapter 5, second edition, 2016
+	\textit{The Little Book Of Semaphores version 2.2.1}, chapter 5, second edition, 2016
+	\bibitem{bytes}
+	River crossing problem, 
+	\textit{\href{https://blog.ksub.org}{https://blog.ksub.org}.}
 	\end{thebibliography}
 \end{document}

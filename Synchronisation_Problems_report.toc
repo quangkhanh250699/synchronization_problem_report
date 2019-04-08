@@ -1,11 +1,12 @@
-\contentsline {section}{\numberline {1}V\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex } ng\IeC {\uhorn }\IeC {\`\ohorn }i h\IeC {\'u}t thu\IeC {\'\ocircumflex }c l\IeC {\'a}}{1}% 
-\contentsline {subsection}{\numberline {1.1}\IeC {\DJ }\IeC {\d \abreve }t v\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex }}{1}% 
-\contentsline {subsection}{\numberline {1.2}M\IeC {\^o} h\IeC {\`\i }nh code c\IeC {\h u}a \IeC {\dj }\IeC {\d a}i l\IeC {\'y}}{2}% 
-\contentsline {subsection}{\numberline {1.3}L\IeC {\`\ohorn }i gi\IeC {\h a}i v\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex } v\IeC {\'\ohorn }i c\IeC {\'a}c c\IeC {\^a}u l\IeC {\d \ecircumflex }nh r\IeC {\~ e} nh\IeC {\'a}nh}{4}% 
-\contentsline {subsection}{\numberline {1.4}L\IeC {\`\ohorn }i gi\IeC {\h a}i v\IeC {\'\ohorn }i d\IeC {\~a}y \IeC {\dj }\IeC {\`e}n b\IeC {\'a}o Semaphore \cite {r3}}{4}% 
-\contentsline {subsection}{\numberline {1.5}Tr\IeC {\uhorn }\IeC {\`\ohorn }ng h\IeC {\d \ohorn }p \IeC {\dj }\IeC {\d a}i l\IeC {\'y} kh\IeC {\^o}ng ch\IeC {\`\ohorn } \IeC {\dj }\IeC {\d \ohorn }i t\IeC {\'\i }n hi\IeC {\d \ecircumflex }u t\IeC {\`\uhorn } ng\IeC {\uhorn }\IeC {\`\ohorn }i h\IeC {\'u}t}{6}% 
-\contentsline {subsection}{\numberline {1.6}Nh\IeC {\d \acircumflex }n x\IeC {\'e}t}{6}% 
-\contentsline {section}{\numberline {2}V\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex } Qua s\IeC {\^o}ng}{7}% 
-\contentsline {subsection}{\numberline {2.1}\IeC {\DJ }\IeC {\d \abreve }t v\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex }}{7}% 
-\contentsline {subsection}{\numberline {2.2}M\IeC {\^o} h\IeC {\`\i }nh code}{7}% 
-\contentsline {subsection}{\numberline {2.3}L\IeC {\`\ohorn }i gi\IeC {\h a}i c\IeC {\h u}a t\IeC {\'a}c gi\IeC {\h a} Allen B.Downey}{7}% 
+\contentsline {section}{\numberline {1}V\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex } ng\IeC {\uhorn }\IeC {\`\ohorn }i h\IeC {\'u}t thu\IeC {\'\ocircumflex }c l\IeC {\'a}}{1}{section.1}% 
+\contentsline {subsection}{\numberline {1.1}\IeC {\DJ }\IeC {\d \abreve }t v\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex }}{1}{subsection.1.1}% 
+\contentsline {subsection}{\numberline {1.2}M\IeC {\^o} h\IeC {\`\i }nh code c\IeC {\h u}a \IeC {\dj }\IeC {\d a}i l\IeC {\'y}}{2}{subsection.1.2}% 
+\contentsline {subsection}{\numberline {1.3}L\IeC {\`\ohorn }i gi\IeC {\h a}i v\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex } v\IeC {\'\ohorn }i c\IeC {\'a}c c\IeC {\^a}u l\IeC {\d \ecircumflex }nh r\IeC {\~ e} nh\IeC {\'a}nh}{3}{subsection.1.3}% 
+\contentsline {subsection}{\numberline {1.4}L\IeC {\`\ohorn }i gi\IeC {\h a}i v\IeC {\'\ohorn }i d\IeC {\~a}y \IeC {\dj }\IeC {\`e}n b\IeC {\'a}o Semaphore \cite {r3}}{4}{subsection.1.4}% 
+\contentsline {subsection}{\numberline {1.5}Tr\IeC {\uhorn }\IeC {\`\ohorn }ng h\IeC {\d \ohorn }p \IeC {\dj }\IeC {\d a}i l\IeC {\'y} kh\IeC {\^o}ng ch\IeC {\`\ohorn } \IeC {\dj }\IeC {\d \ohorn }i t\IeC {\'\i }n hi\IeC {\d \ecircumflex }u t\IeC {\`\uhorn } ng\IeC {\uhorn }\IeC {\`\ohorn }i h\IeC {\'u}t}{5}{subsection.1.5}% 
+\contentsline {subsection}{\numberline {1.6}Nh\IeC {\d \acircumflex }n x\IeC {\'e}t}{5}{subsection.1.6}% 
+\contentsline {section}{\numberline {2}V\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex } Qua s\IeC {\^o}ng}{6}{section.2}% 
+\contentsline {subsection}{\numberline {2.1}\IeC {\DJ }\IeC {\d \abreve }t v\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex }}{6}{subsection.2.1}% 
+\contentsline {subsection}{\numberline {2.2}M\IeC {\^o} h\IeC {\`\i }nh code}{6}{subsection.2.2}% 
+\contentsline {subsection}{\numberline {2.3}L\IeC {\`\ohorn }i gi\IeC {\h a}i c\IeC {\h u}a t\IeC {\'a}c gi\IeC {\h a} Allen B.Downey}{6}{subsection.2.3}% 
+\contentsline {subsection}{\numberline {2.4}L\IeC {\`\ohorn }i gi\IeC {\h a}i tr\IeC {\^e}n blog c\IeC {\h u}a Marcelo Bytes\cite {bytes}}{7}{subsection.2.4}% 
