@@ -431,6 +431,15 @@
 		\end{verbatim}
 	\end{tcolorbox}
 
+	\textbf{Nhận xét: } Lời giải này cung cấp một hướng tiếp cận mới cho bài toán Qua Sông,
+	song vẫn còn hạn chế - Trong trường hợp có 2 hacker và 1 nhân viên đã lên đò, việc block
+	hackerGenerator() sẽ khiến cho chương trình phải chờ đợi cho tới khi một tiến trình nhân 
+	viên mới xuất hiện. Nếu trong một thời gian dài chỉ có tiến trình hacker xuất hiện, chương
+	trình sẽ rơi vào trạng thái livelock. 
+	
+	Lời giải đầu tiên không làm nảy sinh vấn đề này, vì nó không cho tiến trình nào lên đò 
+	cho tới khi chắc chắn có thể hình thành một tổ hợp hợp lệ.
+
 	\pagebreak
 	\begin{thebibliography}{9}
 	\bibitem{littlebook4}
