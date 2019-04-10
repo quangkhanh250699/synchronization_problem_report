@@ -4,6 +4,8 @@
 \usepackage{geometry}
 \usepackage{verbatim}
 \usepackage{hyperref}
+\usepackage{url}
+\usepackage{listings}
 
 \geometry{
 		top = 25mm,
@@ -25,6 +27,8 @@
 			   Trương Quang Khánh \\
 		\end{flushleft}
 		
+
+		
 	\section*{Tóm tắt}
 	Từ trước, các bài toán giải quyết vấn đề tranh trấp tài nguyên găng là một nền tảng vô cùng cơ bản trong 
 	mô hình hệ điều hành, trong các mô hình tính toán song song, và đôi khi là một số vấn đề thực tế thường gặp
@@ -32,15 +36,222 @@
 	nhưng thực tế nó cũng được phát biểu dưới hình thức các tình huống xảy ra xung quanh, rất quen thuộc mà 
 	đôi khi ta không để ý đến. Trong báo cáo này sẽ là các bài toán đều có đặc điểm chung gồm nhiều loại tiến 
 	trình yêu cầu tài nguyên găng và tài nguyên găng sẽ được cung cấp chỉ khi ta có mô hình tổ hợp tiến trình - tài chỉ
-	nguyên phù hợp. Phần 1 sẽ trình bày về vấn đề người hút thuốc lá, là một bài
+	nguyên phù hợp. 
+	
+	Phần 1 trình bày về vấn đề ông già Noel là bài toán giải quyết việc xử lí thao tác các tiến trình với các điều kiện ràng buộc và thứ tự ưu tiên khác nhau.
+	
+	Phần 2 sẽ trình bày về vấn đề người hút thuốc lá, là một bài
 	toán thể hiện cho tình huống phải giải quyết với tình trạng deadlock, khi rằng buộc bài toán được thực hiện
 	trong môi trường hệ điều hành, tức là chỉ có thể thao tác với code của các tiến trình người dùng mà không 
-	được là hệ điều hành. Phần 2 nói về bài toán người qua sông, một bài toán có thể xảy ra tình trạng livelock.
+	được là hệ điều hành. 
 	
+	Phần 3 nói về bài toán người qua sông, một bài toán có thể xảy ra tình trạng livelock.
+	
+	\newpage
 	
 	\tableofcontents
 	\newpage
+
 	
+	%%-----------------------------------------------------------------------
+%% Vấn đề Ông già noel - The Santa Clause Problem  
+    \section{Vấn đề ông già noel}
+    Tài liệu tham khảo \cite{littlebook4}
+    
+    \subsection{Đặt vấn đề}
+    Vấn đề này bắt nguồn từ Hệ điều hành của William Stallings nhưng anh ta đã đưa nó cho John Trono ở Đại học Saint Michael's tại Vermont.
+    \begin{tcolorbox}
+        Ông già Noel đã ngủ tại cửa hàng của ông tại Bắc Cực. Và chỉ tỉnh dậy khi mà 9 con tuần lộc của ông trở về từ kỉ nghỉ của chúng tại Nam Thái Bình Dương hoặc là những chú elf có vấn đề khó khăn trong việc chế tạo đồ chơi. Khi mà 3 chú elf giải quyết vấn đề, bất kì elf nào khác muốn nhờ ông già Noel giúp đỡ thì phải đợi nhóm elf trước đó được giải quyết xong. Nếu ông già Noel thức dậy mà thấy 3 chú elf đang chờ ở cửa hàng của mình mà con tuần lộc cuối cùng đã trở về thì ông quyết định rằng 3 chú elf phải đợi đến sau giáng sinh, bởi vì việc phát quà Noel đã chuẩn bị sẵn sàng. Con tuần lộc cuối cùng sẽ "lấy" ông già Noel ngay trong khi những con khác sẽ chờ trong một túp lều ấm trước khi việc phát quà sẵn sàng. 
+    \end{tcolorbox}
+    
+    Những thông số kĩ thuật thêm:
+    \begin{itemize}
+        \item Sau khi 9 con tuần lộc phải gọi \textbf{prepareSleigh}, và cả 9 tuần lộc phải gọi \textbf{getHitched}.
+        \item Sau khi elf thứ 3 xuất hiện, ông già Noel phải gọi \textbf{helpElves} và 3 elf phải gọi \textbf{getHelp}. 
+        \item Cả 3 elf phải gọi \textbf{getHelp} trước khi có thêm bất cứ elf nào bước vào (bộ đếm bị tăng lên).
+    \end{itemize}
+    
+    Ông già Noel sẽ chạy trong vòng lặp để có thể giúp thật nhiều nhóm elf. Và chúng ta gỉa sử rằng chỉ có \textbf{chính xác 9 con tuần lộc} nhưng có \textbf{vô hạn elf}.
+    
+    \subsection{Mô hình hóa vấn đề}
+    
+     \begin{center}
+        Các dữ liệu cần quan tâm
+        \begin{tcolorbox}
+        int \textcolor{green}{elfCount} = \textcolor{orange}{reindeerCount} = 0
+        %\vspace{5mm}
+        \newline
+        \newline
+        Semaphore \textcolor{red}{santaSem(0)}
+        
+        Semaphore \textcolor{orange}{reindeerSem(0)}
+        
+        Semaphore \textcolor{green}{elfSem(0)}
+        
+        \vspace{5mm}
+        %Mutex \textbf{mutex}(1)
+        
+        Mutex \textcolor{green}{elfMutex}(1)
+        
+        \end{tcolorbox}
+    \end{center}
+    
+    Sau đây là mô hình code cho 3 đối tượng: Tuần lộc, ông già Noel, elf.
+    
+     \begin{center}
+        Tuần lộc
+        \begin{tcolorbox}
+            \begin{lstlisting}{language = Python}
+            reindeerCount += 1
+            if reindeerCount == 9 : santaSem.signal()
+ 
+            reindeerSem.wait();
+            getHitched()
+            
+            \end{lstlisting}
+        \end{tcolorbox}
+    \end{center}
+    
+    %\pagebreak;
+    
+    \begin{center}
+        Ông già noel
+        \begin{tcolorbox}
+            \begin{lstlisting}{language = Python}
+
+                if reindeerCount == 9 
+                    reindeerCount = 0
+                    prepSleigh()
+                    reindeerSem.signal(9)
+                else if elfCount == 3 :
+                    elfSem.signal(3)
+                    helpElves()
+
+            \end{lstlisting}
+        \end{tcolorbox}
+    \end{center}
+    
+    \begin{center}
+        elf
+        \begin{tcolorbox}
+            \begin{lstlisting}{language = Python}
+                elfMutex.wait()
+
+                elfCount += 1
+                if elfCount == 3 : santaSem.signal()
+                else elfMutex.signal()
+                
+                elfSem.wait()
+                
+                getHelp()
+                elfCount -= 1
+                if elfCount == 0 : elfMutex.signal()
+            \end{lstlisting}
+        
+        \end{tcolorbox}
+    \end{center}
+    
+    Tuy nhiên cách giải quyết này nảy sinh vấn đề về điều kiện ưu tiên khi xử lí các sự kiện.
+    
+    Giả sử rằng trạng thái hiện tại có 2 elf và 8 tuần lộc đang chờ.
+    \begin{itemize}
+        \item \textcolor{green}{Elf} được gọi đến, \textcolor{green}{elfCount} tăng lên 3. Khi đó elf sẽ gửi tín hiệu đến \textcolor{red}{ông già Noel} để đánh thức ông dậy để giúp chúng.
+        \item \textcolor{red}{Ông già Noel} nhận được tín hiệu và dậy. Tuy nhiên trước khi ông ra cửa kiểm tra thì \textcolor{orange}{Tuần lộc} được gọi và \textcolor{orange}{reindeerCount} tăng lên 9.
+        \item Lúc này ông già Noel kiểm tra thì thấy 9 tuần lộc nên xử lí việc đi phát quà. Sau đó \textcolor{orange}{Tuần lộc} gửi tín hiệu đến \textcolor{red}{ông già Noel} để xử lí việc phát quà thì \textcolor{red}{ông già Noel} lại xử lí việc giúp elf.
+    \end{itemize}
+            
+
+    
+    \subsection{Cách giải quyết vấn đề}
+    Tham khảo tại \cite{littlebook4} \cite{youtube1}
+    
+    Thêm một đèn tín hiệu kiểm soát. Đèn tín hiệu này sẽ kiểm soát các sự kiện sau và đảm bảo chỉ 1 sự kiện xảy ra trong cùng một thời điểm.
+   
+    \begin{itemize}
+        \item \textcolor{red}{Ông già Noel} kiểm tra xem thực hiện việc đi phát quà hay là giúp đỡ elf.
+        \item \textcolor{green}{Elf} nếu còn chỗ trống trong phòng chờ sẽ vào đó ngồi chờ (\textcolor{green}{elfCount} tăng lên).
+         \item \textcolor{orange}{Tuần lộc} trở về (\textcolor{orange}{reindeerCount} tăng lên).
+    \end{itemize}
+   
+    Đèn tín hiệu:
+   
+    \begin{center}
+        \begin{tcolorbox}    
+            Mutex \textbf{mutex(1)}
+        \end{tcolorbox}
+    \end{center}
+   
+    
+    Cách giải quyết này chạy trong vòng lặp
+    
+    \begin{center}
+        Tuần lộc
+        \begin{tcolorbox}
+            \begin{lstlisting}{language = Python}
+            mutex.wait()
+                reindeerCount += 1
+                if reindeerCount == 9 : santaSem.signal()
+            mutex.signal()
+ 
+            reindeerSem.wait()
+            getHitched()
+            
+            \end{lstlisting}
+        \end{tcolorbox}
+    \end{center}
+    
+    \begin{center}
+        Ông già noel
+        \begin{tcolorbox}
+            \begin{lstlisting}{language = Python}
+                santaSem.wait()
+
+                mutex.wait()
+                    if reindeerCount == 9 
+                        reindeerCount = 0
+                        prepSleigh()
+                        reindeerSem.signal(9)
+                    else if elfCount == 3 : 
+                        elfSem.signal(3)
+                        helpElves()
+                mutex.signal()
+            \end{lstlisting}
+        \end{tcolorbox}
+    \end{center}
+    
+    %\pagebreak
+    
+    \begin{center}
+        elves
+        \begin{tcolorbox}
+            \begin{lstlisting}{language = Python}
+                elfMutex.wait()
+
+                mutex.wait()
+                    elfCount += 1
+                    if elfCount == 3 : santaSem.signal()
+                    else elfMutex.signal()
+                mutex.signal()
+
+                elfSem.wait()
+
+                getHelp()
+                mutex.wait()
+                    elfCount -= 1
+                    if elfCount == 0 : elfMutex.signal()
+                mutex.signal()
+            \end{lstlisting}
+        
+        \end{tcolorbox}
+    \end{center}
+    
+    \subsection{Nhận xét}
+    
+    Ta thấy rằng trong vấn đề ông già Noel giải quyết vấn đề của Tuần lộc và Elf. Ông già Noel có nhiệm vụ chính là giải quyết các vấn đề đúng với tín hiệu được gọi và đúng thứ tự ưu tiên. Mỗi thời điểm chỉ có một sự kiện được giải quyết là ông già Noel thực hiện việc giúp đỡ, một Elf vào phòng chờ hoặc là một Tuần lộc trở về từ kỉ nghỉ.
+
+
+
+	%----------------------------------------------------------------------------------------------------------------------------
 	
 	\section{Vấn đề người hút thuốc lá}
 	Bài toán về người hút thuốc lá được đưa ra bởi Suhas Patil \cite{littlebook4}.
@@ -462,11 +673,17 @@
 	\bibitem{littlebook4} 
   	Allen B.Downey,
   	\textit{The Little Book Of Semaphores version 2.2.1}, chapter 4, second edition, 2016
+	
+	\bibitem{youtube1}
+    	\textit{} The Santa Claus Problem - Thread Synchronization ( \url{https://www.youtube.com/watch?v=pqO6tKN2lc4} )
+
   	\bibitem{r3}
 	\textit{}Parnas, David. (1975). On a solution to the cigarette smoker's problem (without conditional statements). Communications of the ACM. 18. 181-183. 10.1145/360680.360709. 
+
 	\bibitem{littlebook5}
   	Allen B.Downey,
 	\textit{The Little Book Of Semaphores version 2.2.1}, chapter 5, second edition, 2016
+
 	\bibitem{bytes}
 	River crossing problem, 
 	\textit{\href{https://blog.ksub.org}{https://blog.ksub.org}.}
