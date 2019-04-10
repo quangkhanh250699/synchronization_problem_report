@@ -24,8 +24,23 @@
 			   Trần Minh Hiếu  \\
 			   Trương Quang Khánh \\
 		\end{flushleft}
+		
+	\section*{Tóm tắt}
+	Từ trước, các bài toán giải quyết vấn đề tranh trấp tài nguyên găng là một nền tảng vô cùng cơ bản trong 
+	mô hình hệ điều hành, trong các mô hình tính toán song song, và đôi khi là một số vấn đề thực tế thường gặp
+	trong cuộc sống. Trong hệ điều hành, được thể hiện thông qua các tiến trình, các tài nguyên, luồng, ..., 
+	nhưng thực tế nó cũng được phát biểu dưới hình thức các tình huống xảy ra xung quanh, rất quen thuộc mà 
+	đôi khi ta không để ý đến. Trong báo cáo này sẽ là các bài toán đều có đặc điểm chung gồm nhiều loại tiến 
+	trình yêu cầu tài nguyên găng và tài nguyên găng sẽ được cung cấp chỉ khi ta có mô hình tổ hợp tiến trình - tài chỉ
+	nguyên phù hợp. Phần 1 sẽ trình bày về vấn đề người hút thuốc lá, là một bài
+	toán thể hiện cho tình huống phải giải quyết với tình trạng deadlock, khi rằng buộc bài toán được thực hiện
+	trong môi trường hệ điều hành, tức là chỉ có thể thao tác với code của các tiến trình người dùng mà không 
+	được là hệ điều hành. Phần 2 nói về bài toán người qua sông, một bài toán có thể xảy ra tình trạng livelock.
+	
+	
 	\tableofcontents
 	\newpage
+	
 	
 	\section{Vấn đề người hút thuốc lá}
 	Bài toán về người hút thuốc lá được đưa ra bởi Suhas Patil \cite{littlebook4}.
@@ -343,52 +358,7 @@
 			rowBoat().}
 		\item {isCaptain là một biến địa phương cho biết tiến trình nào phải gọi rowBoard().}
 	\end{itemize}
-
-	\subsection{Lời giải của tác giả Allen B.Downey}
-	Ý tưởng chủ đạo của lời giải này là khi mỗi một tiến trình xuất hiện, ta cập nhật bộ đếm 
-	tương ứng lên một và kiểm tra xem số lượng hiện tại đã đủ để tạo thành một tổ hợp hoàn chỉnh
-	hợp lệ hay chưa.
-
-	Đoạn code sau xử lý việc lên đò của hacker. Đối với nhân viên ta cũng xử lý tương tự.
-
-	\begin{tcolorbox}
-	\begin{verbatim}
-		mutex.wait()
-		    hackers += 1
-		    if hackers == 4: 
-		        hackerQueue.signal(4)
-		        hackers = 0 
-		        isCaptain = True 
-		    elif hackers == 2 and serfs >= 2: 
-		        hackerQueue.signal(2) 
-		        serfQueue.signal(2) 
-		        serfs -= 2 
-		        hackers = 0 
-		        isCaptain = True 
-		    else:
-		        mutex.signal() # Tiến trình lái đò tiếp tục giữ mutex 
-		
-		hackerQueue.wait() 
-		
-		board() 
-		barrier.wait() 
-		
-		if isCaptain: 
-		    rowBoat() 
-		    mutex.signal() # Tiến trình lái đò có thể bỏ mutex 
-	\end{verbatim}
-	\end{tcolorbox}
 	
-	Khi mỗi tiến trình được mutex cho qua, nó kiểm tra xem số lượng tiến
-	trình đang đợi có đủ tạo thành một tổ hợp hoàn chỉnh hay không. Nếu có, 
-	nó ra tín hiệu phù hợp cho các tiến trình đang đợi, tự tuyên bố là 
-	thuyền trưởng (người lái đò) và tiếp tục giữ mutex để ngăn các tiến trình
-	khác lên đò cho tới khi chuyến đò hiện tại đã khởi hành.
-
-	Barrier sẽ lưu lại số lượng tiến trình đã gọi hàm board(). Khi đã đủ số
-	lượng tiến trình, thuyền trưởng có thể gọi hàm rowBoard() và bỏ mutex để
-	cho phép các tiến trình khác lên chuyến đò tiếp theo.
-
 	\subsection{Lời giải trên blog của Marcelo Bytes\cite{bytes}}
 	Ý tưởng chủ đạo của lời giải này xoay quanh trạng thái có 3 tiến trình đã 
 	lên đò. Khi đó:
@@ -436,9 +406,56 @@
 	hackerGenerator() sẽ khiến cho chương trình phải chờ đợi cho tới khi một tiến trình nhân 
 	viên mới xuất hiện. Nếu trong một thời gian dài chỉ có tiến trình hacker xuất hiện, chương
 	trình sẽ rơi vào trạng thái livelock. 
+
+	\subsection{Lời giải của tác giả Allen B.Downey}
+	Ý tưởng chủ đạo của lời giải này là khi mỗi một tiến trình xuất hiện, ta cập nhật bộ đếm 
+	tương ứng lên một và kiểm tra xem số lượng hiện tại đã đủ để tạo thành một tổ hợp hoàn chỉnh
+	hợp lệ hay chưa.
+
+	Đoạn code sau xử lý việc lên đò của hacker. Đối với nhân viên ta cũng xử lý tương tự.
+
+	\begin{tcolorbox}
+	\begin{verbatim}
+		mutex.wait()
+		    hackers += 1
+		    if hackers == 4: 
+		        hackerQueue.signal(4)
+		        hackers = 0 
+		        isCaptain = True 
+		    elif hackers == 2 and serfs >= 2: 
+		        hackerQueue.signal(2) 
+		        serfQueue.signal(2) 
+		        serfs -= 2 
+		        hackers = 0 
+		        isCaptain = True 
+		    else:
+		        mutex.signal() # Tiến trình lái đò tiếp tục giữ mutex 
+		
+		hackerQueue.wait() 
+		
+		board() 
+		barrier.wait() 
+		
+		if isCaptain: 
+		    rowBoat() 
+		    mutex.signal() # Tiến trình lái đò có thể bỏ mutex 
+	\end{verbatim}
+	\end{tcolorbox}
 	
-	Lời giải đầu tiên không làm nảy sinh vấn đề này, vì nó không cho tiến trình nào lên đò 
-	cho tới khi chắc chắn có thể hình thành một tổ hợp hợp lệ.
+	Khi mỗi tiến trình được mutex cho qua, nó kiểm tra xem số lượng tiến
+	trình đang đợi có đủ tạo thành một tổ hợp hoàn chỉnh hay không. Nếu có, 
+	nó ra tín hiệu phù hợp cho các tiến trình đang đợi, tự tuyên bố là 
+	thuyền trưởng (người lái đò) và tiếp tục giữ mutex để ngăn các tiến trình
+	khác lên đò cho tới khi chuyến đò hiện tại đã khởi hành.
+
+	Barrier sẽ lưu lại số lượng tiến trình đã gọi hàm board(). Khi đã đủ số
+	lượng tiến trình, thuyền trưởng có thể gọi hàm rowBoard() và bỏ mutex để
+	cho phép các tiến trình khác lên chuyến đò tiếp theo.
+	
+	
+	
+	Lời giải này không làm nảy sinh vấn đề như lời giải đầu, vì nó không cho tiến trình nào lên đò 
+	cho tới khi chắc chắn có thể hình thành một tổ hợp hợp lệ.đầu
 
 	\pagebreak
 	\begin{thebibliography}{9}

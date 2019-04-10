@@ -8,5 +8,5 @@
 \contentsline {section}{\numberline {2}V\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex } Qua s\IeC {\^o}ng}{6}{section.2}
 \contentsline {subsection}{\numberline {2.1}\IeC {\DJ }\IeC {\d \abreve }t v\IeC {\'\acircumflex }n \IeC {\dj }\IeC {\`\ecircumflex }}{6}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}M\IeC {\^o} h\IeC {\`\i }nh code}{6}{subsection.2.2}
-\contentsline {subsection}{\numberline {2.3}L\IeC {\`\ohorn }i gi\IeC {\h a}i c\IeC {\h u}a t\IeC {\'a}c gi\IeC {\h a} Allen B.Downey}{6}{subsection.2.3}
-\contentsline {subsection}{\numberline {2.4}L\IeC {\`\ohorn }i gi\IeC {\h a}i tr\IeC {\^e}n blog c\IeC {\h u}a Marcelo Bytes\cite {bytes}}{7}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.3}L\IeC {\`\ohorn }i gi\IeC {\h a}i tr\IeC {\^e}n blog c\IeC {\h u}a Marcelo Bytes\cite {bytes}}{6}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}L\IeC {\`\ohorn }i gi\IeC {\h a}i c\IeC {\h u}a t\IeC {\'a}c gi\IeC {\h a} Allen B.Downey}{7}{subsection.2.4}
